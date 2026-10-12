@@ -1,0 +1,26 @@
+# Generated data. Not committed on purpose: the generator is deterministic, so
+# the data is reproducible from scripts/generate_data.py and the repo stays small.
+data/raw/*.csv
+data/raw/*.parquet
+
+# DuckDB databases
+*.duckdb
+*.duckdb.wal
+
+# dbt
+target/
+dbt_packages/
+logs/
+.user.yml
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

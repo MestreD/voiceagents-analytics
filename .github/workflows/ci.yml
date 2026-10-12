@@ -1,0 +1,48 @@
+name: dbt build
+
+# Proves the project runs from a clean checkout: install, generate the data,
+# build every model, run every test. If this badge is green, a reviewer knows
+# the repo is not a pile of SQL that only worked on one laptop.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Generate the raw data
+        run: python scripts/generate_data.py
+
+      - name: dbt deps
+        run: dbt deps
+        env:
+          DBT_PROFILES_DIR: .
+
+      - name: dbt build
+        run: dbt build --target ci
+        env:
+          DBT_PROFILES_DIR: .
+
+      - name: Upload run artefacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbt-target
+          path: target/
+          retention-days: 7

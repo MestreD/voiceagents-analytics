@@ -1,0 +1,22 @@
+# Kept inside the repo on purpose: this project runs entirely against a local
+# DuckDB file, so there is nothing secret here and anyone who clones the repo
+# can run it. A project pointed at a real warehouse would keep this file in
+# ~/.dbt/ and never commit it.
+#
+# dbt finds it here because DBT_PROFILES_DIR is set to the project root, or
+# because dbt is invoked with --profiles-dir .
+
+voiceagents:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: voiceagents.duckdb
+      threads: 4
+
+    # Used by CI. A separate file keeps a failed CI run from leaving artefacts
+    # in the development database.
+    ci:
+      type: duckdb
+      path: voiceagents_ci.duckdb
+      threads: 4
